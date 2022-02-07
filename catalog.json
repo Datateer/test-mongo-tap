@@ -1,0 +1,34 @@
+{
+  "streams": [
+    {
+      "table_name": "listingsAndReviews",
+      "stream": "listingsAndReviews",
+      "metadata": [
+        {
+          "breadcrumb": [],
+          "metadata": {
+            "table-key-properties": [
+              "_id"
+            ],
+            "database-name": "sample_airbnb",
+            "row-count": 5555,
+            "is-view": false,
+            "valid-replication-keys": [
+              "_id"
+            ],
+            "selected": true,
+            "replication-method": "INCREMENTAL",
+            "replication-key": "_id",
+            "tap-mongodb.projection": "{\"_id\": 1, \"name\": 1, \"last_review\": 1}"
+          }
+        }
+      ],
+      "tap_stream_id": "sample_airbnb-listingsAndReviews",
+      "schema": {
+        "type": "object"
+      },
+      "selected": true,
+      "replication_method": "INCREMENTAL"
+    }
+  ]
+}

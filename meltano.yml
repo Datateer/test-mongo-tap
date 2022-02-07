@@ -1,0 +1,45 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: 324fc8e1-67e5-4d15-a810-e2814fdb0d79
+plugins:
+  extractors:
+    - name: tap-mongodb
+      variant: singer-io
+      pip_url: tap-mongodb
+    - name: tap-mongodb-sample
+      inherit_from: tap-mongodb
+      config:
+        user: datateer
+        password: $TAP_MONGODB_PASSWORD
+        host: localhost
+        port: 27017
+        database: sample_airbnb
+      metadata:
+        sample_airbnb-listingsAndReviews:
+          # not working until this is done https://gitlab.com/meltano/meltano/-/issues/2388
+          # for now need to provide elt using the --catalog param or the catalog: extra setting below
+          # "tap-mongodb.projection": '{"_id": 1, "name": 1, "last_review": 1}'
+          replication-key: _id
+          replication-method: INCREMENTAL
+      catalog: ./catalog.json
+  loaders:
+    - name: target-jsonl
+      variant: andyh1203
+      pip_url: target-jsonl
+    - name: target-s3-jsonl
+      namespace: target_s3_jsonl
+      pip_url: git+ssh://git@github.com/datateer/target-s3-jsonl.git@main
+      executable: target-s3-jsonl
+      settings:
+        - name: aws_access_key_id
+          env: TARGET_S3_AWS_ACCESS_KEY_ID
+        - name: aws_secret_access_key
+          env: TARGET_S3_AWS_SECRET_ACCESS_KEY
+        - name: s3_bucket
+          env: S3_RAW_BUCKET
+        - name: naming_convention
+        - name: temp_dir
+    - name: target-s3-jsonl-sample
+      inherit_from: target-s3-jsonl
+      config:
+        naming_convention: sample/tap-mongodb/{stream}/export_date={date}/{stream}_{timestamp}.jsonl

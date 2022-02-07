@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "test-mongo-tap"
+version = "0.1.0"
+description = ""
+authors = ["Adam Roderick <aroder@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.10"
+meltano = "^1.94.0"
+dnspython = "^2.2.0"
+pymongo = "^4.0.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

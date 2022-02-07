@@ -1,0 +1,6 @@
+/venv
+/.meltano
+.env
+config.json
+output.json
+output/
