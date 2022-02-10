@@ -19,7 +19,7 @@
             "selected": true,
             "replication-method": "INCREMENTAL",
             "replication-key": "_id",
-            "tap-mongodb.projection": "{\"_id\": 1, \"name\": 1, \"last_review\": 1}"
+            "tap-mongodb.projection": "{\"_id\": 1, \"bathrooms\": 1}"
           }
         }
       ],

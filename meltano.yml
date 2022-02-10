@@ -1,13 +1,11 @@
 version: 1
-send_anonymous_usage_stats: true
+send_anonymous_usage_stats: false
 project_id: 324fc8e1-67e5-4d15-a810-e2814fdb0d79
 plugins:
   extractors:
     - name: tap-mongodb
       variant: singer-io
       pip_url: tap-mongodb
-    - name: tap-mongodb-sample
-      inherit_from: tap-mongodb
       config:
         user: datateer
         password: $TAP_MONGODB_PASSWORD
@@ -16,16 +14,17 @@ plugins:
         database: sample_airbnb
       metadata:
         sample_airbnb-listingsAndReviews:
-          # not working until this is done https://gitlab.com/meltano/meltano/-/issues/2388
-          # for now need to provide elt using the --catalog param or the catalog: extra setting below
-          # "tap-mongodb.projection": '{"_id": 1, "name": 1, "last_review": 1}'
           replication-key: _id
           replication-method: INCREMENTAL
       catalog: ./catalog.json
   loaders:
     - name: target-jsonl
-      variant: andyh1203
-      pip_url: target-jsonl
+      namespace: target_jsonl
+      pip_url: git+ssh://git@github.com/Datateer/target-jsonl.git@master
+      executable: target-jsonl
+      settings:
+        - name: destination_path
+          value: ./output
     - name: target-s3-jsonl
       namespace: target_s3_jsonl
       pip_url: git+ssh://git@github.com/datateer/target-s3-jsonl.git@main
@@ -39,7 +38,7 @@ plugins:
           env: S3_RAW_BUCKET
         - name: naming_convention
         - name: temp_dir
-    - name: target-s3-jsonl-sample
-      inherit_from: target-s3-jsonl
+        - name: date_format
+          value: "%Y-%m-%d"
       config:
         naming_convention: sample/tap-mongodb/{stream}/export_date={date}/{stream}_{timestamp}.jsonl
